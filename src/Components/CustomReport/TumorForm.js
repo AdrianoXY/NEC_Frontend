@@ -61,10 +61,10 @@ const TumorForm = ({ side, label, id, focused }) => {
         }
 
         if (islistening === true) {
+            SpeechRecognition.stopListening()
+        } else if (islistening === false) {
             SpeechRecognition.startListening({ continuous: true })
             resetTranscript()
-        } else if (islistening === false) {
-            SpeechRecognition.stopListening()
         }
     }
 
@@ -126,7 +126,7 @@ const TumorForm = ({ side, label, id, focused }) => {
 
             <Grid container spacing={4}>
                 <Button sx={{ fontSize: '1.1rem' }} onClick={handleVoiceInput}>
-                    <KeyboardVoiceIcon style={islistening ? { color: 'cadetblue' } : { color: 'red' }} />
+                    <KeyboardVoiceIcon style={islistening === false ? { color: 'cadetblue' } : { color: 'red' }} />
                 </Button>
                 <p>{transcript}</p>
             </Grid>
