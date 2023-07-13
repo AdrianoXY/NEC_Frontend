@@ -19,52 +19,40 @@ const TumorForm = ({ side, label, id, focused }) => {
     const [distance, setDistance] = useState(0)
     const [islistening, setIslistening] = useState(false)
 
-    const [message, setMessage] = useState('')
-    console.log(message)
     const commands = [
         {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+            command: ':name :value',
+            callback: (name, value) => {
+                if (value) {
+                    const lowervalue = String(value).slice(0, -1).toLowerCase()
+                    setForm([...form, { key: name, value: lowervalue }])
+                } else {
+                    const tmpForm = form.filter((f) => f.key !== name)
+                    setForm([...tmpForm])
+                }
+            },
         },
         {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+            command: 'clock :value',
+            callback: (value) => {
+                const dot = String(value).slice(0, -1)
+                setClock(dot)
+            },
         },
         {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+            command: 'distance :value',
+            callback: (value) => {
+                const dot = String(value).slice(0, -1)
+                setDistance(dot <= CHESTMAXRADIUS ? dot : CHESTMAXRADIUS)
+            },
         },
         {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
-        },
-        {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
-        },
-        {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
-        },
-        {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
-        },
-        {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
-        },
-        {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
-        },
-        {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
-        },
-        {
-            command: 'Shape *',
-            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+            command: 'size :value',
+            callback: (value) => {
+                const dot = String(value).slice(0, -1)
+                const s = dot * 1
+                setSize(s <= TUMORMAXSIZE ? s : TUMORMAXSIZE)
+            },
         },
     ]
     const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition({
