@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { TextField, FormControl, InputLabel, Select, MenuItem, Box, Grid } from '@mui/material'
+import { TextField, FormControl, InputLabel, Select, MenuItem, Box, Grid, Button } from '@mui/material'
+import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice'
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { useDispatch, useSelector } from 'react-redux'
 import { updatePoint } from '../../Redux/Slices/Breast'
 
@@ -15,6 +17,8 @@ const TumorForm = ({ side, label, id, focused }) => {
     const [size, setSize] = useState(1)
     const [form, setForm] = useState([])
     const [distance, setDistance] = useState(0)
+    const [islistening, setIslistening] = useState(false)
+    const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition()
 
     useEffect(() => {
         if (id) {
@@ -47,6 +51,20 @@ const TumorForm = ({ side, label, id, focused }) => {
         } else {
             const tmpForm = form.filter((f) => f.key !== name)
             setForm([...tmpForm])
+        }
+    }
+
+    const handleVoiceInput = () => {
+        setIslistening(!islistening)
+        if (!browserSupportsSpeechRecognition) {
+            return <span>Browser doesn't support speech recognition.</span>
+        }
+
+        if (islistening === true) {
+            SpeechRecognition.startListening({ continuous: true })
+            resetTranscript()
+        } else if (islistening === false) {
+            SpeechRecognition.stopListening()
         }
     }
 
@@ -104,6 +122,13 @@ const TumorForm = ({ side, label, id, focused }) => {
                         onChange={handleSizeChange}
                     />
                 </Grid>
+            </Grid>
+
+            <Grid container spacing={4}>
+                <Button sx={{ fontSize: '1.1rem' }} onClick={handleVoiceInput}>
+                    <KeyboardVoiceIcon style={islistening ? { color: 'cadetblue' } : { color: 'red' }} />
+                </Button>
+                <p>{transcript}</p>
             </Grid>
 
             <Grid container spacing={4}>
