@@ -18,7 +18,58 @@ const TumorForm = ({ side, label, id, focused }) => {
     const [form, setForm] = useState([])
     const [distance, setDistance] = useState(0)
     const [islistening, setIslistening] = useState(false)
-    const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition()
+
+    const [message, setMessage] = useState('')
+    console.log(message)
+    const commands = [
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+        {
+            command: 'Shape *',
+            callback: (shape) => setMessage(`Your order is for: ${shape}`),
+        },
+    ]
+    const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition({
+        commands,
+    })
 
     useEffect(() => {
         if (id) {
@@ -57,7 +108,7 @@ const TumorForm = ({ side, label, id, focused }) => {
     const handleVoiceInput = () => {
         setIslistening(!islistening)
         if (!browserSupportsSpeechRecognition) {
-            return <span>Browser doesn't support speech recognition.</span>
+            window.alert('Browser does not support speech recognition')
         }
 
         if (islistening === true) {
@@ -126,7 +177,7 @@ const TumorForm = ({ side, label, id, focused }) => {
 
             <Grid container spacing={4}>
                 <Button sx={{ fontSize: '1.1rem' }} onClick={handleVoiceInput}>
-                    <KeyboardVoiceIcon style={islistening === false ? { color: 'cadetblue' } : { color: 'red' }} />
+                    <KeyboardVoiceIcon style={listening ? { color: 'red' } : { color: 'cadetblue' }} />
                 </Button>
                 <p>{transcript}</p>
             </Grid>
