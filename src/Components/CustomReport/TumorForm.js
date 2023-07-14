@@ -4,6 +4,7 @@ import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { useDispatch, useSelector } from 'react-redux'
 import { updatePoint } from '../../Redux/Slices/Breast'
+import FuzzySet from 'fuzzyset'
 
 import ReportForm from '../../Assets/Json/ReportCols2.json'
 import useStyles from './Style'
@@ -19,39 +20,94 @@ const TumorForm = ({ side, label, id, focused }) => {
     const [distance, setDistance] = useState(0)
     const [islistening, setIslistening] = useState(false)
 
+    const set = FuzzySet([
+        'Shape',
+        'oval',
+        'round',
+        'irregualr',
+        'Margin',
+        'circumscribed',
+        'indistinct',
+        'angular',
+        'microbuate',
+        'spiculated',
+    ])
+
+    const englishToNumber = (word) => {
+        switch (word) {
+            case 'zero':
+                return 0
+            case 'one':
+                return 1
+            case 'two':
+                return 2
+            case 'three':
+                return 3
+            case 'four':
+                return 4
+            case 'five':
+                return 5
+            case 'six':
+                return 6
+            case 'seven':
+                return 7
+            case 'eight':
+                return 8
+            case 'nine':
+                return 9
+            case 'ten':
+                return 10
+            case 'eleven':
+                return 11
+            case 'twelve':
+                return 12
+            default:
+                return NaN
+        }
+    }
+
     const commands = [
         {
-            command: ':name :value',
-            callback: (name, value) => {
-                if (value) {
-                    const lowervalue = String(value).slice(0, -1).toLowerCase()
-                    setForm([...form, { key: name, value: lowervalue }])
-                } else {
-                    const tmpForm = form.filter((f) => f.key !== name)
-                    setForm([...tmpForm])
-                }
-            },
-        },
-        {
-            command: 'clock :value',
+            command: 'Clock :value',
             callback: (value) => {
-                const dot = String(value).slice(0, -1)
+                const dot = englishToNumber(String(value).slice(0, -1))
                 setClock(dot)
             },
         },
         {
-            command: 'distance :value',
+            command: 'Distance :value',
             callback: (value) => {
-                const dot = String(value).slice(0, -1)
+                const dot = englishToNumber(String(value).slice(0, -1))
                 setDistance(dot <= CHESTMAXRADIUS ? dot : CHESTMAXRADIUS)
             },
         },
         {
-            command: 'size :value',
+            command: 'Size :value',
             callback: (value) => {
-                const dot = String(value).slice(0, -1)
+                const dot = englishToNumber(String(value).slice(0, -1))
                 const s = dot * 1
                 setSize(s <= TUMORMAXSIZE ? s : TUMORMAXSIZE)
+            },
+        },
+        {
+            command: ':name :value',
+            callback: (name, value) => {
+                const Aname = set.get(name)[0]
+                const Avalue = set.get(value)[0]
+                if (Aname[0] >= 0.4) {
+                    var rname = Aname[1]
+                }
+                if (Avalue[0] >= 0.4) {
+                    var rvalue = Avalue[1]
+                }
+                console.log(rname)
+                console.log(rvalue)
+                if (value) {
+                    setForm([...form, { key: rname, value: rvalue }])
+                } else {
+                    const tmpForm = form.filter((f) => f.key !== rname)
+                    setForm([...tmpForm])
+                }
             },
         },
     ]
