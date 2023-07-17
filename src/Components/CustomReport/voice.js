@@ -18,6 +18,10 @@ const Voice = (props) => {
         'angular',
         'microbuate',
         'spiculated',
+        'Elasticity',
+        'soft',
+        'intermediate',
+        'hard',
     ])
 
     const englishToNumber = (word) => {
