@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { TextField, FormControl, InputLabel, Select, MenuItem, Box, Grid, Button } from '@mui/material'
-import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice'
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { useDispatch, useSelector } from 'react-redux'
 import { updatePoint } from '../../Redux/Slices/Breast'
-import FuzzySet from 'fuzzyset'
 
 import ReportForm from '../../Assets/Json/ReportCols2.json'
 import useStyles from './Style'
