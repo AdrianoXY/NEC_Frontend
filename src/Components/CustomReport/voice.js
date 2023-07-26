@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import FuzzySet from 'fuzzyset'
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
@@ -6,19 +6,66 @@ import { Grid, Button } from '@mui/material'
 
 const Voice = (props) => {
     const [islistening, setIslistening] = useState(false)
+    const [recognizedText, setRecognizedText] = useState('')
 
     const set = FuzzySet([
         'Shape',
         'oval',
         'round',
         'irregualr',
+        'Orientation',
+        'parallel',
+        'not_parallel',
         'Margin',
         'circumscribed',
         'indistinct',
         'angular',
         'microbuate',
         'spiculated',
+        'EchoPattern',
+        'anechoic',
+        'hyperechoic',
+        'complex',
+        'hypoechoic',
+        'isoechoic',
+        'PosteriorFeatures',
+        'no_psterior_acoustic_features',
+        'enhancement',
+        'shadowing',
+        'combined_pattern',
+        'AssociatedFeatures',
+        'duct_change',
+        'skin_change_skin_thickening',
+        'skin_change_skin_retraction',
+        'Vascularity',
+        'vasculariry_absent',
+        'vasculariry_internal_vascularity',
+        'vasculariry_vesseles_in_rim',
+        'SurroundingChanges',
+        'duct_changes',
+        'coopers_ligament_changes',
+        'edema',
+        'architectural_distortion',
+        'skin_thickening',
+        'skin_retraction_irregularity',
+        'SpecialCases',
+        'dclustered_microcysts',
+        'complicated_cyst',
+        'mass_in_or_on_skin',
+        'foreign_body',
+        'simple_cysts',
+        'vascularabnormalities_avm',
+        'vascularabnormalities_mondor_disease',
+        'posturgical_fluid_collection',
+        'fat_necrosis',
+        'lymph_nodes_itramammary',
+        'lymph_nodes_axillary',
+        'Calcifications',
+        'intraductal',
+        'microcalcifications_out_of_mass',
+        'microcalcifications_in_mass',
         'Elasticity',
+        'not_assessed',
         'soft',
         'intermediate',
         'hard',
@@ -61,7 +108,6 @@ const Voice = (props) => {
         {
             command: 'Clock :value',
             callback: (value) => {
-                console.log(value)
                 if (isNaN(value)) {
                     const dot = englishToNumber(String(value).slice(0, -1))
                     props.setClock(dot)
@@ -98,17 +144,43 @@ const Voice = (props) => {
             },
         },
         {
-            command: ':name :value',
-            callback: (name, value) => {
+            command: '* * *',
+            callback: (name1, name2, value) => {
+                console.log('1')
+                name2 = name2.replace(/,/g, '')
+                const name = name1 + name2
                 const Aname = set.get(name)[0]
                 const Avalue = set.get(value)[0]
                 if (Aname[0] >= 0.4) {
                     var rname = Aname[1]
                 }
+
                 if (Avalue[0] >= 0.4) {
                     var rvalue = Avalue[1]
                 }
-                console.log(Aname, Avalue, rname, rvalue)
+                console.log(rname, rvalue)
+                if (value) {
+                    props.setForm([...props.form, { key: rname, value: rvalue }])
+                } else {
+                    const tmpForm = props.form.filter((f) => f.key !== rname)
+                    props.setForm([...tmpForm])
+                }
+            },
+        },
+        {
+            command: ':name *',
+            callback: (name, value) => {
+                console.log('2')
+                const Aname = set.get(name)[0]
+                const Avalue = set.get(value)[0]
+                if (Aname[0] >= 0.4) {
+                    var rname = Aname[1]
+                }
+
+                if (Avalue[0] >= 0.4) {
+                    var rvalue = Avalue[1]
+                }
+
                 if (value) {
                     props.setForm([...props.form, { key: rname, value: rvalue }])
                 } else {
@@ -118,6 +190,7 @@ const Voice = (props) => {
             },
         },
     ]
+
     const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition({
         commands,
     })

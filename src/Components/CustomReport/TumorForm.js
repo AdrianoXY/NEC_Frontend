@@ -115,6 +115,7 @@ const TumorForm = ({ side, label, id, focused }) => {
                 CHESTMAXRADIUS={CHESTMAXRADIUS}
                 setClock={setClock}
                 setDistance={setDistance}
+                setSize={setSize}
                 form={form}
                 setForm={setForm}
             />
