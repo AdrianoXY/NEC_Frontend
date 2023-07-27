@@ -6,49 +6,66 @@ import { Grid, Button } from '@mui/material'
 
 const Voice = (props) => {
     const [islistening, setIslistening] = useState(false)
-    const [recognizedText, setRecognizedText] = useState('')
 
-    const set = FuzzySet([
+    const Fuzzyfirstname = FuzzySet([
+        'Posterior',
+        'Echo',
+        'Special',
+        'Assoicated',
+        'Surrounding',
         'Shape',
+        'Orientation',
+        'Margin',
+        'Vascularity',
+        'Elasticity',
+    ])
+
+    const Fuzzyname = FuzzySet([
+        'Shape',
+        'Orientation',
+        'Margin',
+        'EchoPattern',
+        'PosteriorFeatures',
+        'AssociatedFeatures',
+        'Vascularity',
+        'SurroundingChanges',
+        'SpecialCases',
+        'Calcifications',
+        'Elasticity',
+    ])
+
+    const Fuzzyvalue = FuzzySet([
         'oval',
         'round',
         'irregualr',
-        'Orientation',
         'parallel',
         'not_parallel',
-        'Margin',
         'circumscribed',
         'indistinct',
         'angular',
         'microbuate',
         'spiculated',
-        'EchoPattern',
         'anechoic',
         'hyperechoic',
         'complex',
         'hypoechoic',
         'isoechoic',
-        'PosteriorFeatures',
         'no_psterior_acoustic_features',
         'enhancement',
         'shadowing',
         'combined_pattern',
-        'AssociatedFeatures',
         'duct_change',
         'skin_change_skin_thickening',
         'skin_change_skin_retraction',
-        'Vascularity',
         'vasculariry_absent',
         'vasculariry_internal_vascularity',
         'vasculariry_vesseles_in_rim',
-        'SurroundingChanges',
         'duct_changes',
         'coopers_ligament_changes',
         'edema',
         'architectural_distortion',
         'skin_thickening',
         'skin_retraction_irregularity',
-        'SpecialCases',
         'dclustered_microcysts',
         'complicated_cyst',
         'mass_in_or_on_skin',
@@ -60,11 +77,9 @@ const Voice = (props) => {
         'fat_necrosis',
         'lymph_nodes_itramammary',
         'lymph_nodes_axillary',
-        'Calcifications',
         'intraductal',
         'microcalcifications_out_of_mass',
         'microcalcifications_in_mass',
-        'Elasticity',
         'not_assessed',
         'soft',
         'intermediate',
@@ -144,13 +159,11 @@ const Voice = (props) => {
             },
         },
         {
-            command: '* * *',
-            callback: (name1, name2, value) => {
-                console.log('1')
-                name2 = name2.replace(/,/g, '')
-                const name = name1 + name2
-                const Aname = set.get(name)[0]
-                const Avalue = set.get(value)[0]
+            command: ':name :value',
+            callback: (name, value) => {
+                const Aname = Fuzzyname.get(name)[0]
+                const Avalue = Fuzzyvalue.get(value)[0]
+
                 if (Aname[0] >= 0.4) {
                     var rname = Aname[1]
                 }
@@ -158,7 +171,7 @@ const Voice = (props) => {
                 if (Avalue[0] >= 0.4) {
                     var rvalue = Avalue[1]
                 }
-                console.log(rname, rvalue)
+
                 if (value) {
                     props.setForm([...props.form, { key: rname, value: rvalue }])
                 } else {
@@ -168,11 +181,30 @@ const Voice = (props) => {
             },
         },
         {
-            command: ':name *',
-            callback: (name, value) => {
-                console.log('2')
-                const Aname = set.get(name)[0]
-                const Avalue = set.get(value)[0]
+            command: '* * *',
+            callback: (name1, name2, value1) => {
+                const firstName = Fuzzyfirstname.get(name1)[0]
+                console.log(firstName)
+                if (firstName[0] >= 0.4) {
+                    name1 = firstName[1]
+                }
+
+                if (
+                    name1 === 'Posterior' ||
+                    name1 === 'Special' ||
+                    name1 === 'Echo' ||
+                    name1 === 'Assoicated' ||
+                    name1 === 'Surrounding'
+                ) {
+                    var name = name1 + name2
+                    var value = value1
+                } else {
+                    var name = name1
+                    var value = name2 + value1
+                }
+                const Aname = Fuzzyname.get(name)[0]
+                const Avalue = Fuzzyvalue.get(value)[0]
+
                 if (Aname[0] >= 0.4) {
                     var rname = Aname[1]
                 }
