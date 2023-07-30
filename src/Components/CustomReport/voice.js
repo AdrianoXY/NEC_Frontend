@@ -18,6 +18,9 @@ const Voice = (props) => {
         'Margin',
         'Vascularity',
         'Elasticity',
+        'Clock',
+        'Distance',
+        'Size',
     ])
 
     const Fuzzyname = FuzzySet([
@@ -163,15 +166,12 @@ const Voice = (props) => {
             callback: (name, value) => {
                 const Aname = Fuzzyname.get(name)[0]
                 const Avalue = Fuzzyvalue.get(value)[0]
-
                 if (Aname[0] >= 0.4) {
                     var rname = Aname[1]
                 }
-
                 if (Avalue[0] >= 0.4) {
                     var rvalue = Avalue[1]
                 }
-
                 if (value) {
                     props.setForm([...props.form, { key: rname, value: rvalue }])
                 } else {
@@ -188,7 +188,6 @@ const Voice = (props) => {
                 if (firstName[0] >= 0.4) {
                     name1 = firstName[1]
                 }
-
                 if (
                     name1 === 'Posterior' ||
                     name1 === 'Special' ||
@@ -204,15 +203,12 @@ const Voice = (props) => {
                 }
                 const Aname = Fuzzyname.get(name)[0]
                 const Avalue = Fuzzyvalue.get(value)[0]
-
                 if (Aname[0] >= 0.4) {
                     var rname = Aname[1]
                 }
-
                 if (Avalue[0] >= 0.4) {
                     var rvalue = Avalue[1]
                 }
-
                 if (value) {
                     props.setForm([...props.form, { key: rname, value: rvalue }])
                 } else {
@@ -221,6 +217,12 @@ const Voice = (props) => {
                 }
             },
         },
+        // {
+        //     command: '*',
+        //     callback: (value) => {
+        //         handleCheckKeywords(value)
+        //     },
+        // },
     ]
 
     const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition({
@@ -240,6 +242,57 @@ const Voice = (props) => {
             resetTranscript()
         }
     }
+
+    // const getFollowingWords = (value, keywords) => {
+    //     const words = value.toLowerCase().split(' ')
+
+    //     const results = {}
+
+    //     for (let i = 0; i < words.length - 1; i++) {
+    //         const currentWord = words[i]
+
+    //         let fuzzyResult = Fuzzyfirstname.get(currentWord)
+    //         if (fuzzyResult === null) {
+    //             fuzzyResult = [] // 將 null 設為空陣列
+    //         }
+
+    //         if (fuzzyResult.length > 0 && fuzzyResult[0][0] >= 0.4) {
+    //             const updatedWord = fuzzyResult[0][1] // 使用新的變數來存儲模糊查詢後的結果
+
+    //             for (const keyword of keywords) {
+    //                 if (updatedWord === keyword) {
+    //                     // 找到關鍵詞後，依次捕捉相同或相似的詞語
+    //                     let followingWords = [words[i + 1]]
+    //                     let j = i + 2
+    //                     while (j < words.length) {
+    //                         const nextWord = words[j]
+    //                         const nextFuzzyResult = Fuzzyfirstname.get(nextWord)
+    //                         if (nextFuzzyResult === null) {
+    //                             break
+    //                         }
+    //                         const nextUpdatedWord = nextFuzzyResult[0][1]
+    //                         if (keywords.includes(nextUpdatedWord)) {
+    //                             break
+    //                         }
+    //                         followingWords.push(nextWord)
+    //                         j++
+    //                     }
+    //                     results[keyword] = followingWords.join(' ')
+    //                     break
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return results
+    // }
+
+    // const handleCheckKeywords = (value) => {
+    //     const keywordsToCheck = ['Clock', 'Distance', 'Size', 'Shape', 'Vascularity']
+
+    //     const followingWords = getFollowingWords(value, keywordsToCheck)
+
+    //     console.log(followingWords)
+    // }
 
     return (
         <Grid container spacing={4}>
